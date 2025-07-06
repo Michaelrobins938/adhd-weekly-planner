@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💫 ADHD-Friendly Energy Planner | Your Chaos, Your Rules</title>
+    <meta name="description" content="A neurodivergent-designed weekly planner that actually works with your brain, not against it.">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Crimson+Text:wght@400;600&family=Inter:wght@300;400;500;700&display=swap');
+        
+        :root {
+            --void-black: #0a0a0a;
+            --blood-red: #ff1744;
+            --electric-purple: #d500f9;
+            --toxic-green: #76ff03;
+            --nightmare-pink: #ff006e;
+            --acid-yellow: #ffea00;
+            --chaos-blue: #2196f3;
+            --bone-white: #fafafa;
+            --shadow-deep: rgba(0, 0, 0, 0.8);
+            --shadow-glow: rgba(255, 0, 110, 0.3);
+            --success-glow: rgba(118, 255, 3, 0.4);
+            --warning-glow: rgba(255, 234, 0, 0.4);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--void-black);
+            background-image: 
+                radial-gradient(circle at 20% 80%, var(--nightmare-pink) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, var(--electric-purple) 0%, transparent 50%);
+            color: var(--bone-white);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 1rem;
+            overflow-x: hidden;
+        }
+
+        /* 🧠 ADHD-Friendly Animations */
+        @keyframes gentle-glow {
+            0%, 100% { box-shadow: 0 0 10px var(--shadow-glow); }
+            50% { box-shadow: 0 0 20px var(--success-glow); }
+        }
+
+        @keyframes completion-celebration {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, var(--void-black) 0%, #1a0a1a 100%);
+            border-radius: 0;
+            box-shadow: 0 20px 40px var(--shadow-deep);
+            overflow: hidden;
+            position: relative;
+            border: 2px solid var(--electric-purple);
+        }
+
+        /* 🎯 Focus Mode Toggle */
+        .focus-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .focus-btn {
+            padding: 10px 15px;
+            background: var(--void-black);
+            border: 2px solid var(--electric-purple);
+            color: var(--bone-white);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .focus-btn:hover, .focus-btn.active {
+            background: var(--electric-purple);
+            box-shadow: 0 0 15px var(--electric-purple);
+        }
+
+        /* 🌈 Energy Pattern Tracker */
+        .energy-insights {
+            background: linear-gradient(135deg, var(--void-black) 0%, var(--nightmare-pink) 50%, var(--electric-purple) 100%);
+            padding: 2rem;
+            margin: 1rem;
+            border-radius: 15px;
+            border: 2px solid var(--toxic-green);
+        }
+
+        .energy-pattern {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 1rem;
+        }
+
+        .energy-day {
+            height: 60px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .energy-day:hover {
+            transform: translateY(-3px);
+        }
+
+        /* 🧠 Header with Brain-Friendly Features */
+        .header {
+            background: linear-gradient(135deg, var(--void-black) 0%, var(--nightmare-pink) 50%, var(--electric-purple) 100%);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title {
+            font-family: 'Creepster', serif;
+            font-size: clamp(1.5rem, 4vw, 2.8rem);
+            background: linear-gradient(45deg, var(--toxic-green), var(--acid-yellow), var(--nightmare-pink));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbow 3s ease-in-out infinite;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes rainbow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--bone-white);
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        /* 🎯 Today's Focus Section */
+        .todays-focus {
+            background: linear-gradient(135deg, var(--blood-red) 0%, var(--void-black) 100%);
+            margin: 1rem 2rem;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 3px solid var(--acid-yellow);
+            position: relative;
+        }
+
+        .focus-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--bone-white);
+        }
+
+        .focus-item {
+            background: var(--void-black);
+            border: 2px solid var(--toxic-green);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .focus-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 0 15px var(--toxic-green);
+        }
+
+        .focus-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--toxic-green);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .focus-checkbox.completed {
+            background: var(--toxic-green);
+            animation: completion-celebration 0.5s ease;
+        }
+
+        .focus-checkbox.completed::after {
+            content: '✓';
+            position: absolute;
+            top: -3px;
+            left: 2px;
+            color: var(--void-black);
+            font-weight: bold;
+        }
+
+        /* 🧠 Smart Task Input with ADHD Features */
+        .smart-task-input {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .task-input {
+            width: 100%;
+            background: var(--void-black);
+            border: 2px solid var(--electric-purple);
+            border-radius: 10px;
+            padding: 1rem;
+            color: var(--bone-white);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            resize: none;
+            transition: all 0.3s ease;
+        }
+
+        .task-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px var(--electric-purple);
+            border-color: var(--toxic-green);
+        }
+
+        .task-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--void-black);
+            border: 2px solid var(--electric-purple);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 0.8rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-item:hover {
+            background: var(--electric-purple);
+        }
+
+        /* ⏰ Time Estimation Helper */
+        .time-estimator {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .time-chip {
+            padding: 0.3rem 0.8rem;
+            background: var(--nightmare-pink);
+            border-radius: 15px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .time-chip:hover, .time-chip.selected {
+            background: var(--toxic-green);
+            border-color: var(--bone-white);
+            transform: translateY(-2px);
+        }
+
+        /* 🧠 Main Planning Grid - ADHD Optimized */
+        .planner-container {
+            padding: 2rem;
+        }
+
+        .planner-grid {
+            display: grid;
+            grid-template-columns: 160px 1fr 1fr 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .grid-header {
+            font-family: 'Crimson Text', serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--bone-white);
+            padding: 1.5rem 1rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--void-black) 0%, var(--electric-purple) 100%);
+            border: 2px solid var(--nightmare-pink);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-label {
+            font-family: 'Crimson Text', serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--bone-white);
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--nightmare-pink) 0%, var(--void-black) 100%);
+            border: 2px solid var(--electric-purple);
+            position: relative;
+            animation: gentle-glow 4s infinite ease-in-out;
+        }
+
+        .day-energy-indicator {
+            width: 100%;
+            height: 4px;
+            background: var(--toxic-green);
+            margin-top: 0.5rem;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .energy-cell {
+            position: relative;
+            background: linear-gradient(135deg, var(--void-black) 0%, #1a0a1a 100%);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+
+        .energy-cell:hover {
+            transform: translateY(-3px);
+        }
+
+        /* 🎯 Smart Energy Input */
+        .energy-input {
+            width: 100%;
+            min-height: 80px;
+            background: transparent;
+            border: none;
+            color: var(--bone-white);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .energy-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-style: italic;
+        }
+
+        /* 📝 Task Item Enhancement */
+        .task-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid var(--toxic-green);
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+            border-left-color: var(--acid-yellow);
+        }
+
+        .task-item.in-progress {
+            border-left-color: var(--nightmare-pink);
+            animation: gentle-glow 2s infinite;
+        }
+
+        /* ⚡ Energy Level Indicators */
+        .high-energy {
+            border-color: var(--blood-red);
+            box-shadow: 0 0 15px rgba(255, 23, 68, 0.2);
+        }
+
+        .medium-energy {
+            border-color: var(--acid-yellow);
+            box-shadow: 0 0 15px rgba(255, 234, 0, 0.2);
+        }
+
+        .low-energy {
+            border-color: var(--toxic-green);
+            box-shadow: 0 0 15px rgba(118, 255, 3, 0.2);
+        }
+
+        .recharge {
+            border-color: var(--electric-purple);
+            box-shadow: 0 0 15px rgba(213, 0, 249, 0.2);
+        }
+
+        /* 🎮 Enhanced Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--void-black) 0%, var(--nightmare-pink) 50%, var(--void-black) 100%);
+            border-top: 2px solid var(--electric-purple);
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            border: 3px solid;
+            background: var(--void-black);
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-primary {
+            border-color: var(--toxic-green);
+            color: var(--toxic-green);
+        }
+
+        .btn-secondary {
+            border-color: var(--nightmare-pink);
+            color: var(--nightmare-pink);
+        }
+
+        .btn-warning {
+            border-color: var(--acid-yellow);
+            color: var(--acid-yellow);
+        }
+
+        /* 🏆 Progress & Motivation */
+        .progress-section {
+            background: linear-gradient(135deg, var(--void-black) 0%, var(--electric-purple) 100%);
+            margin: 1rem 2rem;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid var(--toxic-green);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: var(--void-black);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+            border: 2px solid var(--nightmare-pink);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--toxic-green), var(--acid-yellow));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .motivation-message {
+            text-align: center;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 1rem;
+        }
+
+        /* 🧠 Overwhelm Prevention */
+        .overwhelm-shield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .overwhelm-shield.active {
+            display: flex;
+        }
+
+        .overwhelm-message {
+            background: var(--void-black);
+            border: 3px solid var(--toxic-green);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        /* 📱 Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .planner-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .grid-header {
+                display: none;
+            }
+            
+            .energy-cell::before {
+                content: attr(data-label);
+                font-family: 'Crimson Text', serif;
+                font-weight: 600;
+                font-size: 1rem;
+                color: var(--bone-white);
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+
+            .focus-controls {
+                position: static;
+                justify-content: center;
+                margin: 1rem;
+            }
+
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 🖨️ Print Styles */
+        @media print {
+            body { background: white; color: black; }
+            .container { box-shadow: none; border: 2px solid #333; }
+            .header { background: white; color: black; }
+            .title { background: none; -webkit-text-fill-color: black; color: black; }
+            .controls, .focus-controls, .overwhelm-shield { display: none; }
+            .energy-input { border: 1px solid #ccc; background: white; color: black; }
+            .grid-header, .day-label { background: #f0f0f0; color: black; border: 1px solid #333; }
+        }
+
+        /* 🌟 Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            :root {
+                --void-black: #000000;
+                --bone-white: #ffffff;
+            }
+        }
+
+        /* 🎯 Focus Mode Styles */
+        body.focus-mode .energy-cell:not(.current-focus) {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        body.focus-mode .current-focus {
+            box-shadow: 0 0 30px var(--toxic-green);
+            transform: scale(1.02);
+        }
+
+        /* 🔔 Gentle Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--toxic-green);
+            color: var(--void-black);
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 3000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🎯 Focus Controls -->
+    <div class="focus-controls">
+        <button class="focus-btn" id="focusMode">🎯 Focus Mode</button>
+        <button class="focus-btn" id="overwhelmMode">🛡️ Calm Mode</button>
+        <button class="focus-btn" id="energyTracker">⚡ Energy Pattern</button>
+    </div>
+
+    <!-- 🔔 Notification System -->
+    <div class="notification" id="notification"></div>
+
+    <!-- 🛡️ Overwhelm Prevention Shield -->
+    <div class="overwhelm-shield" id="overwhelmShield">
+        <div class="overwhelm-message">
+            <h3>🌸 Breathe, Beautiful Human 🌸</h3>
+            <p>You're feeling overwhelmed. That's okay. Let's slow down.</p>
+            <p>Take 3 deep breaths. You don't have to do everything today.</p>
+            <button class="btn btn-primary" onclick="exitOverwhelmMode()">I'm Ready to Continue</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 🧠 Header -->
+        <header class="header">
+            <h1 class="title">💫 ADHD-FRIENDLY ENERGY PLANNER</h1>
+            <p class="subtitle">Your Chaos, Your Rules, Your Pace</p>
+        </header>
+
+        <!-- ⚡ Energy Pattern Insights -->
+        <section class="energy-insights" id="energyInsights" style="display: none;">
+            <h3>🧠 Your Energy Patterns This Week</h3>
+            <div class="energy-pattern" id="energyPattern"></div>
+            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                Track patterns to understand your natural rhythms. No judgment, just data. 💜
+            </p>
+        </section>
+
+        <!-- 🎯 Today's Focus -->
+        <section class="todays-focus">
+            <h3 class="focus-title">🎯 Today's Gentle Focus</h3>
+            <div id="todaysFocus">
+                <div class="smart-task-input">
+                    <textarea class="task-input" id="newFocusTask" 
+                        placeholder="What's ONE thing that would make today feel good? (Be specific but kind to yourself)"
+                        rows="2"></textarea>
+                    <div class="task-suggestions" id="taskSuggestions"></div>
+                </div>
+                <div class="time-estimator">
+                    <span style="font-size: 0.8rem; opacity: 0.8;">How long might this take?</span>
+                    <div class="time-chip" data-time="15">15min</div>
+                    <div class="time-chip" data-time="30">30min</div>
+                    <div class="time-chip" data-time="60">1hr</div>
+                    <div class="time-chip" data-time="120">2hr</div>
+                    <div class="time-chip" data-time="240">Half day</div>
+                </div>
+            </div>
+            <div id="focusList"></div>
+        </section>
+
+        <!-- 🏆 Progress Tracking -->
+        <section class="progress-section">
+            <h3>🏆 This Week's Gentle Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="motivation-message" id="motivationMessage">
+                Every small step counts. You're doing better than you think. 💜
+            </div>
+        </section>
+
+        <!-- 📅 Main Planning Grid -->
+        <main class="planner-container">
+            <div class="planner-grid" id="plannerGrid">
+                <!-- Grid headers -->
+                <div class="grid-header"></div>
+                <div class="grid-header">High Energy<br><small>⚡ When you're buzzing</small></div>
+                <div class="grid-header">Medium Energy<br><small>🌊 Steady flow state</small></div>
+                <div class="grid-header">Low Energy<br><small>🌸 Gentle tasks only</small></div>
+                <div class="grid-header">Recharge<br><small>🔋 Rest & restore</small></div>
+                
+                <!-- Days will be generated by JavaScript -->
+            </div>
+        </main>
+
+        <!-- 🎮 Enhanced Controls -->
+        <footer class="controls">
+            <button class="btn btn-primary" onclick="smartSave()">💾 Smart Save</button>
+            <button class="btn btn-secondary" onclick="gentleReset()">🌸 Gentle Reset</button>
+            <button class="btn btn-warning" onclick="printPlanner()">📄 Print/Save</button>
+            <button class="btn btn-primary" onclick="showEnergyInsights()">📊 Energy Insights</button>
+        </footer>
+    </div>
+
+    <script>
+        // 🧠 ADHD-Friendly Energy Planner with Real Solutions
+        
+        class ADHDFriendlyPlanner {
+            constructor() {
+                this.currentWeek = new Date();
+                this.focusMode = false;
+                this.overwhelmMode = false;
+                this.energyData = this.loadEnergyData();
+                this.taskSuggestions = [
+                    "Send one important email",
+                    "Make that phone call you've been avoiding",
+                    "Tidy one small area",
+                    "Take a 10-minute walk",
+                    "Drink water and take vitamins",
+                    "Reply to one text message",
+                    "Do laundry (just one load)",
+                    "Plan tomorrow's outfit",
+                    "Write in journal for 5 minutes",
+                    "Stretch for 10 minutes",
+                    "Read for 15 minutes",
+                    "Meditate for 5 minutes",
+                    "Call a friend",
+                    "Do one household task",
+                    "Work on passion project for 30 minutes",
+                    "Prep healthy snacks",
+                    "Review and pay one bill",
+                    "Update calendar",
+                    "Listen to favorite podcast",
+                    "Practice gratitude"
+                ];
+                this.motivationalMessages = [
+                    "You're doing better than you think! 💜",
+                    "Small steps are still steps forward 🌸",
+                    "Your worth isn't measured by productivity 💫",
+                    "Rest is productive too, beautiful human 🌙",
+                    "Progress over perfection, always ✨",
+                    "You're allowed to have gentle days 🌿",
+                    "Celebrate the tiny wins! 🎉",
+                    "Your brain works differently, and that's beautiful 🧠💕"
+                ];
+                this.init();
+            }
+            
+            init() {
+                this.generateWeekGrid();
+                this.loadFromStorage();
+                this.setupEventListeners();
+                this.updateProgress();
+                this.startGentleReminders();
+            }
+            
+            // 🗓️ Generate Smart Week Grid
+            generateWeekGrid() {
+                const grid = document.getElementById('plannerGrid');
+                const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                const energyTypes = ['high', 'medium', 'low', 'recharge'];
+                const energyLabels = ['High Energy', 'Medium Energy', 'Low Energy', 'Recharge'];
+                
+                // Clear existing content except headers
+                const headers = grid.querySelectorAll('.grid-header');
+                grid.innerHTML = '';
+                headers.forEach(header => grid.appendChild(header));
+                
+                days.forEach((day, dayIndex) => {
+                    // Day label with energy indicator
+                    const dayLabel = document.createElement('div');
+                    dayLabel.className = 'day-label';
+                    dayLabel.innerHTML = `
+                        ${day}
+                        <div class="day-energy-indicator" data-day="${day.toLowerCase()}"></div>
+                    `;
+                    grid.appendChild(dayLabel);
+                    
+                    // Energy cells
+                    energyTypes.forEach((energy, energyIndex) => {
+                        const cell = document.createElement('div');
+                        cell.className = `energy-cell ${energy}`;
+                        cell.dataset.label = energyLabels[energyIndex];
+                        cell.innerHTML = `
+                            <div class="smart-task-input">
+                                <textarea 
+                                    class="energy-input" 
+                                    data-day="${day.toLowerCase()}" 
+                                    data-energy="${energy}"
+                                    placeholder="${this.getSmartPlaceholder(energy)}"
+                                    rows="3"
+                                ></textarea>
+                                <div class="task-suggestions"></div>
+                            </div>
+                        `;
+                        grid.appendChild(cell);
+                    });
+                });
+                
+                this.setupTaskInputs();
+            }
+            
+            // 🧠 Smart Placeholder Text
+            getSmartPlaceholder(energy) {
+                const placeholders = {
+                    high: "When you're feeling energized... (Break big tasks into steps)",
+                    medium: "Steady, manageable tasks... (Your comfort zone)",
+                    low: "Gentle, low-pressure activities... (Be kind to yourself)",
+                    recharge: "Rest, self-care, fun... (This is productive too)"
+                };
+                return placeholders[energy];
+            }
+            
+            // 🎯 Setup Smart Task Inputs
+            setupTaskInputs() {
+                const inputs = document.querySelectorAll('.energy-input');
+                inputs.forEach(input => {
+                    input.addEventListener('input', (e) => {
+                        this.autoResize(e.target);
+                        this.saveToStorage();
+                        this.updateProgress();
+                        this.detectOverwhelm(e.target);
+                    });
+                    
+                    input.addEventListener('focus', (e) => this.showTaskSuggestions(e.target));
+                    input.addEventListener('blur', (e) => {
+                        setTimeout(() => this.hideTaskSuggestions(e.target), 200);
+                    });
+                    
+                    this.autoResize(input);
+                });
+            }
+            
+            // 📝 Smart Task Suggestions
+            showTaskSuggestions(input) {
+                const container = input.parentElement;
+                const suggestions = container.querySelector('.task-suggestions');
+                const value = input.value.toLowerCase();
+                
+                const relevantSuggestions = this.taskSuggestions
+                    .filter(suggestion => 
+                        suggestion.toLowerCase().includes(value) || 
+                        value === '' ||
+                        this.getRelevantSuggestions(input.dataset.energy).includes(suggestion)
+                    )
+                    .slice(0, 5);
+                
+                if (relevantSuggestions.length > 0) {
+                    suggestions.innerHTML = relevantSuggestions
+                        .map(suggestion => `<div class="suggestion-item">${suggestion}</div>`)
+                        .join('');
+                    
+                    suggestions.style.display = 'block';
+                    
+                    // Add click handlers
+                    suggestions.querySelectorAll('.suggestion-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            input.value = item.textContent;
+                            this.hideTaskSuggestions(input);
+                            this.saveToStorage();
+                            this.updateProgress();
+                        });
+                    });
+                }
+            }
+            
+            hideTaskSuggestions(input) {
+                const container = input.parentElement;
+                const suggestions = container.querySelector('.task-suggestions');
+                suggestions.style.display = 'none';
+            }
+            
+            // 🧠 Energy-Specific Suggestions
+            getRelevantSuggestions(energy) {
+                const energySuggestions = {
+                    high: ["Make that phone call you've been avoiding", "Work on passion project for 30 minutes", "Do laundry (just one load)", "Send one important email"],
+                    medium: ["Tidy one small area", "Update calendar", "Reply to one text message", "Review and pay one bill"],
+                    low: ["Take a 10-minute walk", "Drink water and take vitamins", "Stretch for 10 minutes", "Listen to favorite podcast"],
+                    recharge: ["Read for 15 minutes", "Meditate for 5 minutes", "Write in journal for 5 minutes", "Practice gratitude"]
+                };
+                return energySuggestions[energy] || [];
+            }
+            
+            // 🚨 Overwhelm Detection
+            detectOverwhelm(input) {
+                const dayInputs = document.querySelectorAll(`[data-day="${input.dataset.day}"]`);
+                const totalTasks = Array.from(dayInputs).reduce((count, inp) => {
+                    return count + (inp.value.split('\n').filter(line => line.trim()).length);
+                }, 0);
+                
+                if (totalTasks > 8) {
+                    this.showNotification("Whoa there, beautiful! That's a lot for one day. Maybe move some tasks to other days? 💜", 'warning');
+                }
+            }
+            
+            // 🔔 Gentle Notifications
+            showNotification(message, type = 'info') {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification show ${type}`;
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            }
+            
+            // 📊 Energy Pattern Tracking
+            trackEnergyPattern(day, energy, hasContent) {
+                if (!this.energyData[day]) this.energyData[day] = {};
+                this.energyData[day][energy] = hasContent;
+                this.saveEnergyData();
+                this.updateEnergyIndicators();
+            }
+            
+            updateEnergyIndicators() {
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                days.forEach(day => {
+                    const indicator = document.querySelector(`[data-day="${day}"]`);
+                    if (indicator) {
+                        const dayData = this.energyData[day] || {};
+                        const completionRate = Object.values(dayData).filter(Boolean).length / 4;
+                        indicator.style.width = `${completionRate * 100}%`;
+                        
+                        if (completionRate > 0.7) indicator.style.background = 'var(--toxic-green)';
+                        else if (completionRate > 0.4) indicator.style.background = 'var(--acid-yellow)';
+                        else indicator.style.background = 'var(--nightmare-pink)';
+                    }
+                });
+            }
+            
+            // 🎯 Focus Mode
+            toggleFocusMode() {
+                this.focusMode = !this.focusMode;
+                document.body.classList.toggle('focus-mode', this.focusMode);
+                document.getElementById('focusMode').classList.toggle('active', this.focusMode);
+                
+                if (this.focusMode) {
+                    this.showNotification("Focus mode activated! Only current section visible. 🎯");
+                } else {
+                    this.showNotification("Focus mode deactivated. Welcome back to full view! 👀");
+                }
+            }
+            
+            // 🛡️ Overwhelm Protection
+            toggleOverwhelmMode() {
+                this.overwhelmMode = !this.overwhelmMode;
+                document.getElementById('overwhelmShield').classList.toggle('active', this.overwhelmMode);
+                document.getElementById('overwhelmMode').classList.toggle('active', this.overwhelmMode);
+            }
+            
+            // ⚡ Show Energy Insights
+            showEnergyInsights() {
+                const insights = document.getElementById('energyInsights');
+                const pattern = document.getElementById('energyPattern');
+                
+                insights.style.display = insights.style.display === 'none' ? 'block' : 'none';
+                
+                if (insights.style.display === 'block') {
+                    this.generateEnergyPattern(pattern);
+                }
+            }
+            
+            generateEnergyPattern(container) {
+                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                container.innerHTML = '';
+                
+                days.forEach(day => {
+                    const dayEl = document.createElement('div');
+                    dayEl.className = 'energy-day';
+                    dayEl.innerHTML = `<div>${day}</div>`;
+                    
+                    // Add energy level indicator based on completion
+                    const dayData = this.energyData[day.toLowerCase()] || {};
+                    const completion = Object.values(dayData).filter(Boolean).length;
+                    dayEl.style.background = this.getEnergyColor(completion);
+                    
+                    container.appendChild(dayEl);
+                });
+            }
+            
+            getEnergyColor(completion) {
+                if (completion >= 3) return 'var(--toxic-green)';
+                if (completion >= 2) return 'var(--acid-yellow)';
+                if (completion >= 1) return 'var(--nightmare-pink)';
+                return 'var(--void-black)';
+            }
+            
+            // 🏆 Progress Tracking
+            updateProgress() {
+                const inputs = document.querySelectorAll('.energy-input');
+                const filledInputs = Array.from(inputs).filter(input => input.value.trim().length > 0);
+                const progress = (filledInputs.length / inputs.length) * 100;
+                
+                document.getElementById('progressFill').style.width = `${progress}%`;
+                
+                const messageEl = document.getElementById('motivationMessage');
+                const randomMessage = this.motivationalMessages[Math.floor(Math.random() * this.motivationalMessages.length)];
+                
+                if (progress > 80) {
+                    messageEl.textContent = "Look at you being amazing! 🌟 " + randomMessage;
+                } else if (progress > 50) {
+                    messageEl.textContent = "Great progress! " + randomMessage;
+                } else if (progress > 20) {
+                    messageEl.textContent = "Every step counts! " + randomMessage;
+                } else {
+                    messageEl.textContent = randomMessage;
+                }
+            }
+            
+            // 💾 Enhanced Storage
+            saveToStorage() {
+                const data = {};
+                const inputs = document.querySelectorAll('.energy-input');
+                
+                inputs.forEach(input => {
+                    const key = `${input.dataset.day}-${input.dataset.energy}`;
+                    data[key] = input.value;
+                    
+                    // Track energy patterns
+                    this.trackEnergyPattern(input.dataset.day, input.dataset.energy, input.value.trim().length > 0);
+                });
+                
+                try {
+                    localStorage.setItem('adhdFriendlyPlanner', JSON.stringify(data));
+                    localStorage.setItem('plannerLastSaved', new Date().toISOString());
+                } catch (e) {
+                    this.showNotification("Couldn't save automatically. Try the manual save button! 💾", 'warning');
+                }
+            }
+            
+            loadFromStorage() {
+                try {
+                    const data = JSON.parse(localStorage.getItem('adhdFriendlyPlanner')) || {};
+                    
+                    Object.entries(data).forEach(([key, value]) => {
+                        const input = document.querySelector(`[data-day="${key.split('-')[0]}"][data-energy="${key.split('-')[1]}"]`);
+                        if (input) {
+                            input.value = value;
+                            this.autoResize(input);
+                        }
+                    });
+                    
+                    this.updateProgress();
+                    this.updateEnergyIndicators();
+                } catch (e) {
+                    console.log('Loading had a hiccup, but we\'re okay! 💜');
+                }
+            }
+            
+            // 🔄 Auto-resize
+            autoResize(textarea) {
+                textarea.style.height = 'auto';
+                const newHeight = Math.max(textarea.scrollHeight, 60);
+                textarea.style.height = newHeight + 'px';
+            }
+            
+            // ⏰ Gentle Reminders
+            startGentleReminders() {
+                // Gentle reminder every 30 minutes to save
+                setInterval(() => {
+                    const lastSaved = localStorage.getItem('plannerLastSaved');
+                    if (lastSaved) {
+                        const timeSince = Date.now() - new Date(lastSaved).getTime();
+                        if (timeSince > 30 * 60 * 1000) { // 30 minutes
+                            this.showNotification("Gentle reminder: Your work is auto-saved! 💜");
+                        }
+                    }
+                }, 30 * 60 * 1000);
+                
+                // Random motivation every hour
+                setInterval(() => {
+                    const randomMessage = this.motivationalMessages[Math.floor(Math.random() * this.motivationalMessages.length)];
+                    this.showNotification(randomMessage);
+                }, 60 * 60 * 1000);
+            }
+            
+            // 🧠 Energy Data Management
+            loadEnergyData() {
+                try {
+                    return JSON.parse(localStorage.getItem('energyPatternData')) || {};
+                } catch (e) {
+                    return {};
+                }
+            }
+            
+            saveEnergyData() {
+                try {
+                    localStorage.setItem('energyPatternData', JSON.stringify(this.energyData));
+                } catch (e) {
+                    console.log('Energy data save hiccup - no worries! 💜');
+                }
+            }
+            
+            // 🌸 Gentle Reset
+            gentleReset() {
+                const message = `Are you sure you want to gently reset your planner? 
+                
+This will clear your current week, but your energy patterns will be saved for insights.
+
+Remember: Starting fresh is always okay. You're not failing. 💜`;
+                
+                if (confirm(message)) {
+                    document.querySelectorAll('.energy-input').forEach(input => {
+                        input.value = '';
+                        this.autoResize(input);
+                    });
+                    
+                    this.saveToStorage();
+                    this.updateProgress();
+                    this.showNotification("Fresh start activated! You've got this. 🌸");
+                }
+            }
+            
+            // 💾 Smart Save
+            smartSave() {
+                this.saveToStorage();
+                this.showNotification("All saved! Your beautiful chaos is preserved. 💾✨");
+            }
+            
+            // 🖨️ Print
+            print() {
+                window.print();
+            }
+            
+            // 🎮 Event Listeners
+            setupEventListeners() {
+                document.getElementById('focusMode').addEventListener('click', () => this.toggleFocusMode());
+                document.getElementById('overwhelmMode').addEventListener('click', () => this.toggleOverwhelmMode());
+                document.getElementById('energyTracker').addEventListener('click', () => this.showEnergyInsights());
+                
+                // Today's focus functionality
+                const newTaskInput = document.getElementById('newFocusTask');
+                const timeChips = document.querySelectorAll('.time-chip');
+                
+                newTaskInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.addFocusTask();
+                    }
+                });
+                
+                timeChips.forEach(chip => {
+                    chip.addEventListener('click', () => {
+                        timeChips.forEach(c => c.classList.remove('selected'));
+                        chip.classList.add('selected');
+                    });
+                });
+            }
+            
+            // 🎯 Today's Focus Management
+            addFocusTask() {
+                const input = document.getElementById('newFocusTask');
+                const task = input.value.trim();
+                const selectedTime = document.querySelector('.time-chip.selected');
+                
+                if (task) {
+                    const focusList = document.getElementById('focusList');
+                    const taskEl = document.createElement('div');
+                    taskEl.className = 'focus-item';
+                    taskEl.innerHTML = `
+                        <div class="focus-checkbox" onclick="this.classList.toggle('completed')"></div>
+                        <div style="flex: 1;">
+                            ${task}
+                            ${selectedTime ? `<small style="opacity: 0.7; display: block;">Estimated: ${selectedTime.textContent}</small>` : ''}
+                        </div>
+                    `;
+                    
+                    focusList.appendChild(taskEl);
+                    input.value = '';
+                    document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('selected'));
+                    
+                    this.showNotification("Focus task added! Remember: done is better than perfect. 🎯");
+                }
+            }
+        }
+        
+        // 🚀 Initialize when ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.planner = new ADHDFriendlyPlanner();
+            
+            // Global functions for buttons
+            window.smartSave = () => window.planner.smartSave();
+            window.gentleReset = () => window.planner.gentleReset();
+            window.printPlanner = () => window.planner.print();
+            window.showEnergyInsights = () => window.planner.showEnergyInsights();
+            window.exitOverwhelmMode = () => window.planner.toggleOverwhelmMode();
+        });
+        
+        console.log('🧠 ADHD-Friendly Chaos Planner loaded!');
+        console.log('💜 Built with neurodivergent brains in mind');
+        console.log('🌟 You are enough, exactly as you are');
+    </script>
+</body>
+</html>
