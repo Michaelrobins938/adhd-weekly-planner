@@ -2,1203 +2,743 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💫 ADHD-Friendly Energy Planner | Your Chaos, Your Rules</title>
-    <meta name="description" content="A neurodivergent-designed weekly planner that actually works with your brain, not against it.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Executive Function App</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#050508">
+    
+    <!-- Embedded PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkV4ZWN1dGl2ZSBGdW5jdGlvbiBEYXNoYm9hcmQiLAogICJzaG9ydF9uYW1lIjogIkV4ZWNEYXNoIiwKICAiZGVzY3JpcHRpb24iOiAiQW4gQURIRC1mcmllbmRseSBlbmVyZ3kgcGxhbm5lci4iLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzA1MDUwOCIsCiAgInRoZW1lX2NvbG9yIjogIiNmZjAwNTUiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSFpwWlhkQ2IzZzlJakFnTUNBeE1EQWdNVFB3SWo0OGNtVmpkQ0IzYVdSMGFEMGlNVEF3SWlCb1pXbG5hSFE5SWpFd01DSWdabWxzYkQwaUl6QTFNRFV3T0NJdlBqeDBaWGgwSUhrOUlqVXdJaUI0UFNJMU1DSWdabTl1ZEMxemFYcGxQU0kxTUNJZ2RHVjRkQzFoYm1Ob2IzSTlJbTFwWkdSc1pTSWdaSGs5SWk0elptMGlQamN2YzNablBqeDhjM1puUGc9PSIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0KICBdCn0=">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Crimson+Text:wght@400;600&family=Inter:wght@300;400;500;700&display=swap');
-        
         :root {
-            --void-black: #0a0a0a;
-            --blood-red: #ff1744;
-            --electric-purple: #d500f9;
-            --toxic-green: #76ff03;
-            --nightmare-pink: #ff006e;
-            --acid-yellow: #ffea00;
-            --chaos-blue: #2196f3;
-            --bone-white: #fafafa;
-            --shadow-deep: rgba(0, 0, 0, 0.8);
-            --shadow-glow: rgba(255, 0, 110, 0.3);
-            --success-glow: rgba(118, 255, 3, 0.4);
-            --warning-glow: rgba(255, 234, 0, 0.4);
+            --bg-void: #050508;
+            --bg-surface: rgba(20, 20, 30, 0.75);
+            --bg-panel: rgba(30, 30, 45, 0.8);
+            
+            --energy-high: #ff0055;
+            --energy-med: #ffaa00;
+            --energy-low: #00f0ff;
+            --energy-rest: #b000ff;
+            --success: #00ff66;
+            
+            --text-main: #f0f0f0;
+            --text-muted: #888899;
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--void-black);
-            background-image: 
-                radial-gradient(circle at 20% 80%, var(--nightmare-pink) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, var(--electric-purple) 0%, transparent 50%);
-            color: var(--bone-white);
-            line-height: 1.6;
+            background: var(--bg-void);
+            color: var(--text-main);
             min-height: 100vh;
-            padding: 1rem;
             overflow-x: hidden;
+            overscroll-behavior-y: none; /* Prevents pull-to-refresh on mobile apps */
         }
 
-        /* 🧠 ADHD-Friendly Animations */
-        @keyframes gentle-glow {
-            0%, 100% { box-shadow: 0 0 10px var(--shadow-glow); }
-            50% { box-shadow: 0 0 20px var(--success-glow); }
+        /* --- Background Engine --- */
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0; opacity: 0.4; }
+        
+        .vignette {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 1;
+            box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.9);
         }
 
-        @keyframes completion-celebration {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        /* --- Effects --- */
+        .spark { position: fixed; pointer-events: none; border-radius: 50%; z-index: 9999; animation: sparkFly 0.8s cubic-bezier(0, .9, .57, 1) forwards; }
+        @keyframes sparkFly { 0% { transform: translate(0, 0) scale(1.5); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, var(--void-black) 0%, #1a0a1a 100%);
-            border-radius: 0;
-            box-shadow: 0 20px 40px var(--shadow-deep);
-            overflow: hidden;
-            position: relative;
-            border: 2px solid var(--electric-purple);
-        }
+        .shake { animation: screenShake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes screenShake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
-        /* 🎯 Focus Mode Toggle */
-        .focus-controls {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-        }
+        .glitch-text { position: relative; display: inline-block; }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; pointer-events: none; }
+        .glitch-text::before { left: 2px; text-shadow: -2px 0 var(--energy-high); animation: glitch-anim 2s infinite linear alternate-reverse; }
+        .glitch-text::after { left: -2px; text-shadow: -2px 0 var(--energy-low); animation: glitch-anim 3s infinite linear alternate-reverse; }
+        @keyframes glitch-anim { 0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); } 40% { clip-path: inset(40% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); } 80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 40% 0); } }
 
-        .focus-btn {
-            padding: 10px 15px;
-            background: var(--void-black);
-            border: 2px solid var(--electric-purple);
-            color: var(--bone-white);
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
+        /* --- Layout --- */
+        #app-wrapper { position: relative; z-index: 10; max-width: 1400px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; min-height: 100vh; }
 
-        .focus-btn:hover, .focus-btn.active {
-            background: var(--electric-purple);
-            box-shadow: 0 0 15px var(--electric-purple);
-        }
+        /* --- Header & Controls --- */
+        header { display: flex; justify-content: space-between; align-items: flex-end; padding: 10px 0 20px 0; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap; gap: 20px; }
+        .title-group h1 { font-family: 'JetBrains Mono', monospace; font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 5px; }
+        .title-group p { color: var(--text-muted); font-size: 0.9rem; }
+        
+        .global-controls { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn { background: var(--bg-panel); border: 1px solid var(--glass-border); color: var(--text-main); padding: 12px 20px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
+        .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .btn:active { transform: scale(0.95); }
+        
+        .btn-dopamine { border-color: var(--dopamine-color); color: var(--dopamine-color); box-shadow: 0 0 15px rgba(255, 170, 0, 0.2); }
+        .btn-install { border-color: var(--success); color: var(--success); display: none; box-shadow: 0 0 15px rgba(0, 255, 102, 0.2); animation: pulseInstall 2s infinite; }
+        .btn-calm { border-color: var(--energy-low); color: var(--energy-low); }
 
-        /* 🌈 Energy Pattern Tracker */
-        .energy-insights {
-            background: linear-gradient(135deg, var(--void-black) 0%, var(--nightmare-pink) 50%, var(--electric-purple) 100%);
-            padding: 2rem;
-            margin: 1rem;
-            border-radius: 15px;
-            border: 2px solid var(--toxic-green);
-        }
+        @keyframes pulseInstall { 0%, 100% { box-shadow: 0 0 15px rgba(0, 255, 102, 0.2); } 50% { box-shadow: 0 0 25px rgba(0, 255, 102, 0.6); } }
 
-        .energy-pattern {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-            margin-top: 1rem;
-        }
+        /* --- Main Quest --- */
+        .focus-section { background: linear-gradient(135deg, rgba(255,0,85,0.1), rgba(176,0,255,0.05)); border: 2px solid var(--energy-high); border-radius: 16px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,0,85,0.1); position: relative; overflow: hidden; }
+        .focus-section::before { content: 'MAIN QUEST'; position: absolute; top: -10px; right: -10px; font-family: 'JetBrains Mono', monospace; font-size: 5rem; font-weight: 900; opacity: 0.03; pointer-events: none; }
+        
+        .focus-title { font-family: 'JetBrains Mono', monospace; color: var(--energy-high); margin-bottom: 15px; font-size: 1.2rem; display: flex; justify-content: space-between; }
+        
+        .focus-input-group { display: flex; gap: 15px; align-items: center; }
+        .checkbox { width: 30px; height: 30px; border: 2px solid var(--text-muted); border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0; background: rgba(0,0,0,0.5); }
+        .checkbox.done { background: var(--success); border-color: var(--success); box-shadow: 0 0 20px var(--success); transform: scale(1.1) rotate(5deg); }
+        .checkbox.done::after { content: '✓'; color: #000; font-weight: 900; font-size: 1.2rem; }
+        
+        .focus-input { flex: 1; background: transparent; border: none; border-bottom: 2px dashed var(--glass-border); color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 1.5rem; font-weight: 600; padding: 10px 5px; outline: none; transition: all 0.3s; }
+        .focus-input:focus { border-bottom-color: var(--energy-high); }
+        .focus-input.done { text-decoration: line-through; opacity: 0.5; filter: grayscale(1); }
 
-        .energy-day {
-            height: 60px;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            border: 1px solid rgba(255,255,255,0.2);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+        /* --- Energy Grid (App Style) --- */
+        .grid-container { background: var(--bg-surface); border: 1px solid var(--glass-border); border-radius: 16px; backdrop-filter: blur(10px); overflow: hidden; display: flex; flex-direction: column; flex: 1; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        .grid-header { display: grid; grid-template-columns: 100px repeat(7, 1fr); background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--glass-border); }
+        .grid-cell-header { padding: 15px 10px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 700; color: var(--text-muted); border-right: 1px solid var(--glass-border); }
+        .grid-cell-header:last-child { border-right: none; }
+        .grid-cell-header.today { color: var(--text-main); background: rgba(255,255,255,0.05); }
 
-        .energy-day:hover {
-            transform: translateY(-3px);
-        }
+        .grid-body { display: flex; flex-direction: column; flex: 1; }
+        .grid-row { display: grid; grid-template-columns: 100px repeat(7, 1fr); border-bottom: 1px solid var(--glass-border); min-height: 100px; }
+        .grid-row:last-child { border-bottom: none; }
+        
+        .row-label { padding: 15px 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-right: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
+        .row-label.high { color: var(--energy-high); border-left: 4px solid var(--energy-high); }
+        .row-label.med { color: var(--energy-med); border-left: 4px solid var(--energy-med); }
+        .row-label.low { color: var(--energy-low); border-left: 4px solid var(--energy-low); }
+        .row-label.rest { color: var(--energy-rest); border-left: 4px solid var(--energy-rest); }
 
-        /* 🧠 Header with Brain-Friendly Features */
-        .header {
-            background: linear-gradient(135deg, var(--void-black) 0%, var(--nightmare-pink) 50%, var(--electric-purple) 100%);
-            padding: 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+        /* The App Clickable Cell */
+        .task-cell { padding: 10px; border-right: 1px solid var(--glass-border); position: relative; transition: background 0.2s; cursor: pointer; display: flex; flex-direction: column; gap: 5px; }
+        .task-cell:last-child { border-right: none; }
+        .task-cell:hover { background: rgba(255,255,255,0.05); }
+        
+        .cell-summary { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; pointer-events: none; }
+        .cell-summary.has-tasks { color: var(--text-main); font-weight: 600; }
+        .cell-task-preview { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+        
+        /* Row Specific Highlights on Hover */
+        .grid-row.row-high .task-cell:hover { box-shadow: inset 0 0 20px rgba(255,0,85,0.1); }
+        .grid-row.row-med .task-cell:hover { box-shadow: inset 0 0 20px rgba(255,170,0,0.1); }
+        .grid-row.row-low .task-cell:hover { box-shadow: inset 0 0 20px rgba(0,240,255,0.1); }
+        .grid-row.row-rest .task-cell:hover { box-shadow: inset 0 0 20px rgba(176,0,255,0.1); }
 
-        .title {
-            font-family: 'Creepster', serif;
-            font-size: clamp(1.5rem, 4vw, 2.8rem);
-            background: linear-gradient(45deg, var(--toxic-green), var(--acid-yellow), var(--nightmare-pink));
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: rainbow 3s ease-in-out infinite;
-            margin-bottom: 0.5rem;
-        }
+        /* --- Task Editor Modal (App Experience) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 8000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        
+        .task-modal { background: var(--bg-panel); border: 1px solid var(--glass-border); border-radius: 20px; width: 90%; max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.8); transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
+        .modal-overlay.active .task-modal { transform: translateY(0); }
+        
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); }
+        .modal-title { font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; transition: color 0.2s; }
+        .modal-close:hover { color: var(--text-main); }
 
-        @keyframes rainbow {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
+        .modal-body { padding: 20px 25px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        
+        /* Interactive Task Items */
+        .task-item { display: flex; gap: 15px; align-items: center; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); transition: all 0.2s; }
+        .task-item:hover { background: rgba(255,255,255,0.05); transform: translateX(2px); }
+        .task-item-text { flex: 1; font-size: 1rem; color: var(--text-main); word-break: break-word; transition: opacity 0.2s; }
+        .task-item.done .task-item-text { text-decoration: line-through; opacity: 0.5; }
+        .task-delete { background: none; border: none; color: var(--energy-high); font-size: 1.2rem; cursor: pointer; opacity: 0.5; transition: opacity 0.2s; padding: 5px; }
+        .task-item:hover .task-delete { opacity: 1; }
 
-        .subtitle {
-            font-size: 1rem;
-            color: var(--bone-white);
-            font-weight: 300;
-            margin-bottom: 1rem;
-        }
+        .task-input-container { display: flex; gap: 10px; margin-top: 10px; }
+        .new-task-input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: var(--text-main); padding: 15px; border-radius: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; outline: none; transition: border-color 0.2s; }
+        .new-task-input:focus { border-color: var(--focus-color); }
+        .btn-add-task { background: var(--focus-color); color: #000; border: none; padding: 0 20px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: transform 0.2s; font-family: 'JetBrains Mono', monospace; }
+        .btn-add-task:active { transform: scale(0.95); }
 
-        /* 🎯 Today's Focus Section */
-        .todays-focus {
-            background: linear-gradient(135deg, var(--blood-red) 0%, var(--void-black) 100%);
-            margin: 1rem 2rem;
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 3px solid var(--acid-yellow);
-            position: relative;
-        }
+        /* --- Calm Mode Overlay --- */
+        #calm-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,5,8,0.95); backdrop-filter: blur(20px); z-index: 9000; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s ease; }
+        #calm-overlay.active { display: flex; opacity: 1; }
+        
+        .breathe-circle { width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle at center, var(--energy-low) 0%, transparent 70%); box-shadow: 0 0 50px var(--energy-low); display: flex; justify-content: center; align-items: center; position: relative; }
+        .breathe-circle::before { content: ''; position: absolute; width: 100%; height: 100%; border: 2px solid var(--energy-low); border-radius: 50%; animation: ripple 4s linear infinite; }
+        @keyframes ripple { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+        
+        .breathe-text { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 800; color: white; text-shadow: 0 0 10px #000; position: relative; z-index: 2; transition: all 0.3s; }
+        .calm-exit { position: absolute; bottom: 50px; background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); padding: 10px 30px; border-radius: 20px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .calm-exit:hover { border-color: white; color: white; }
 
-        .focus-title {
-            font-family: 'Crimson Text', serif;
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--bone-white);
-        }
+        .inhale { animation: breatheIn 4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .hold { transform: scale(1.5); box-shadow: 0 0 100px var(--energy-low); }
+        .exhale { animation: breatheOut 8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        @keyframes breatheIn { from { transform: scale(1); box-shadow: 0 0 50px var(--energy-low); } to { transform: scale(1.5); box-shadow: 0 0 100px var(--energy-low); } }
+        @keyframes breatheOut { from { transform: scale(1.5); box-shadow: 0 0 100px var(--energy-low); } to { transform: scale(1); box-shadow: 0 0 50px var(--energy-low); } }
 
-        .focus-item {
-            background: var(--void-black);
-            border: 2px solid var(--toxic-green);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .focus-item:hover {
-            transform: translateX(10px);
-            box-shadow: 0 0 15px var(--toxic-green);
-        }
-
-        .focus-checkbox {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--toxic-green);
-            border-radius: 4px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .focus-checkbox.completed {
-            background: var(--toxic-green);
-            animation: completion-celebration 0.5s ease;
-        }
-
-        .focus-checkbox.completed::after {
-            content: '✓';
-            position: absolute;
-            top: -3px;
-            left: 2px;
-            color: var(--void-black);
-            font-weight: bold;
-        }
-
-        /* 🧠 Smart Task Input with ADHD Features */
-        .smart-task-input {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-
-        .task-input {
-            width: 100%;
-            background: var(--void-black);
-            border: 2px solid var(--electric-purple);
-            border-radius: 10px;
-            padding: 1rem;
-            color: var(--bone-white);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            resize: none;
-            transition: all 0.3s ease;
-        }
-
-        .task-input:focus {
-            outline: none;
-            box-shadow: 0 0 20px var(--electric-purple);
-            border-color: var(--toxic-green);
-        }
-
-        .task-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: var(--void-black);
-            border: 2px solid var(--electric-purple);
-            border-top: none;
-            border-radius: 0 0 10px 10px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-        }
-
-        .suggestion-item {
-            padding: 0.8rem;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .suggestion-item:hover {
-            background: var(--electric-purple);
-        }
-
-        /* ⏰ Time Estimation Helper */
-        .time-estimator {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .time-chip {
-            padding: 0.3rem 0.8rem;
-            background: var(--nightmare-pink);
-            border-radius: 15px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-
-        .time-chip:hover, .time-chip.selected {
-            background: var(--toxic-green);
-            border-color: var(--bone-white);
-            transform: translateY(-2px);
-        }
-
-        /* 🧠 Main Planning Grid - ADHD Optimized */
-        .planner-container {
-            padding: 2rem;
-        }
-
-        .planner-grid {
-            display: grid;
-            grid-template-columns: 160px 1fr 1fr 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .grid-header {
-            font-family: 'Crimson Text', serif;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--bone-white);
-            padding: 1.5rem 1rem;
-            text-align: center;
-            background: linear-gradient(135deg, var(--void-black) 0%, var(--electric-purple) 100%);
-            border: 2px solid var(--nightmare-pink);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .day-label {
-            font-family: 'Crimson Text', serif;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--bone-white);
-            padding: 1.5rem 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--nightmare-pink) 0%, var(--void-black) 100%);
-            border: 2px solid var(--electric-purple);
-            position: relative;
-            animation: gentle-glow 4s infinite ease-in-out;
-        }
-
-        .day-energy-indicator {
-            width: 100%;
-            height: 4px;
-            background: var(--toxic-green);
-            margin-top: 0.5rem;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .energy-cell {
-            position: relative;
-            background: linear-gradient(135deg, var(--void-black) 0%, #1a0a1a 100%);
-            border-radius: 12px;
-            padding: 1rem;
-            border: 2px solid;
-            transition: all 0.3s ease;
-        }
-
-        .energy-cell:hover {
-            transform: translateY(-3px);
-        }
-
-        /* 🎯 Smart Energy Input */
-        .energy-input {
-            width: 100%;
-            min-height: 80px;
-            background: transparent;
-            border: none;
-            color: var(--bone-white);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            resize: none;
-            outline: none;
-            line-height: 1.5;
-        }
-
-        .energy-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-            font-style: italic;
-        }
-
-        /* 📝 Task Item Enhancement */
-        .task-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 0.8rem;
-            margin-bottom: 0.5rem;
-            border-left: 4px solid var(--toxic-green);
-            position: relative;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .task-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
-        }
-
-        .task-item.completed {
-            opacity: 0.6;
-            text-decoration: line-through;
-            border-left-color: var(--acid-yellow);
-        }
-
-        .task-item.in-progress {
-            border-left-color: var(--nightmare-pink);
-            animation: gentle-glow 2s infinite;
-        }
-
-        /* ⚡ Energy Level Indicators */
-        .high-energy {
-            border-color: var(--blood-red);
-            box-shadow: 0 0 15px rgba(255, 23, 68, 0.2);
-        }
-
-        .medium-energy {
-            border-color: var(--acid-yellow);
-            box-shadow: 0 0 15px rgba(255, 234, 0, 0.2);
-        }
-
-        .low-energy {
-            border-color: var(--toxic-green);
-            box-shadow: 0 0 15px rgba(118, 255, 3, 0.2);
-        }
-
-        .recharge {
-            border-color: var(--electric-purple);
-            box-shadow: 0 0 15px rgba(213, 0, 249, 0.2);
-        }
-
-        /* 🎮 Enhanced Controls */
-        .controls {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, var(--void-black) 0%, var(--nightmare-pink) 50%, var(--void-black) 100%);
-            border-top: 2px solid var(--electric-purple);
-        }
-
-        .btn {
-            padding: 1rem 1.5rem;
-            border: 3px solid;
-            background: var(--void-black);
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-        }
-
-        .btn-primary {
-            border-color: var(--toxic-green);
-            color: var(--toxic-green);
-        }
-
-        .btn-secondary {
-            border-color: var(--nightmare-pink);
-            color: var(--nightmare-pink);
-        }
-
-        .btn-warning {
-            border-color: var(--acid-yellow);
-            color: var(--acid-yellow);
-        }
-
-        /* 🏆 Progress & Motivation */
-        .progress-section {
-            background: linear-gradient(135deg, var(--void-black) 0%, var(--electric-purple) 100%);
-            margin: 1rem 2rem;
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 2px solid var(--toxic-green);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: var(--void-black);
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 1rem 0;
-            border: 2px solid var(--nightmare-pink);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--toxic-green), var(--acid-yellow));
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        .motivation-message {
-            text-align: center;
-            font-style: italic;
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: 1rem;
-        }
-
-        /* 🧠 Overwhelm Prevention */
-        .overwhelm-shield {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .overwhelm-shield.active {
-            display: flex;
-        }
-
-        .overwhelm-message {
-            background: var(--void-black);
-            border: 3px solid var(--toxic-green);
-            padding: 3rem;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-        }
-
-        /* 📱 Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .planner-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
+        /* --- Mobile Responsiveness (App Cards) --- */
+        @media (max-width: 1024px) {
+            .grid-header { display: none; }
+            .grid-container { background: transparent; border: none; backdrop-filter: none; box-shadow: none; gap: 20px; }
+            .grid-body { gap: 20px; }
+            .grid-row { display: flex; flex-direction: column; background: var(--bg-surface); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; height: auto; min-height: auto; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
             
-            .grid-header {
-                display: none;
-            }
+            .row-label { border-right: none; border-bottom: 1px solid var(--glass-border); padding: 15px; font-size: 1rem; border-left: none; border-top: 4px solid; flex-direction: row; justify-content: space-between; }
+            .row-label.high { border-top-color: var(--energy-high); }
+            .row-label.med { border-top-color: var(--energy-med); }
+            .row-label.low { border-top-color: var(--energy-low); }
+            .row-label.rest { border-top-color: var(--energy-rest); }
             
-            .energy-cell::before {
-                content: attr(data-label);
-                font-family: 'Crimson Text', serif;
-                font-weight: 600;
-                font-size: 1rem;
-                color: var(--bone-white);
-                margin-bottom: 0.5rem;
-                display: block;
-            }
-
-            .focus-controls {
-                position: static;
-                justify-content: center;
-                margin: 1rem;
-            }
-
-            .controls {
-                grid-template-columns: 1fr;
-            }
+            .task-cell { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 20px 15px; min-height: 70px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; }
+            .task-cell:last-child { border-bottom: none; }
+            
+            .task-cell::before { content: attr(data-day); font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-main); font-weight: 700; text-transform: uppercase; width: 50px; }
+            .cell-summary { flex: 1; text-align: right; }
+            .cell-task-preview { display: none; } /* Hide preview on mobile, show count */
         }
 
-        /* 🖨️ Print Styles */
-        @media print {
-            body { background: white; color: black; }
-            .container { box-shadow: none; border: 2px solid #333; }
-            .header { background: white; color: black; }
-            .title { background: none; -webkit-text-fill-color: black; color: black; }
-            .controls, .focus-controls, .overwhelm-shield { display: none; }
-            .energy-input { border: 1px solid #ccc; background: white; color: black; }
-            .grid-header, .day-label { background: #f0f0f0; color: black; border: 1px solid #333; }
-        }
-
-        /* 🌟 Accessibility */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        @media (prefers-contrast: high) {
-            :root {
-                --void-black: #000000;
-                --bone-white: #ffffff;
-            }
-        }
-
-        /* 🎯 Focus Mode Styles */
-        body.focus-mode .energy-cell:not(.current-focus) {
-            opacity: 0.3;
-            pointer-events: none;
-        }
-
-        body.focus-mode .current-focus {
-            box-shadow: 0 0 30px var(--toxic-green);
-            transform: scale(1.02);
-        }
-
-        /* 🔔 Gentle Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--toxic-green);
-            color: var(--void-black);
-            padding: 1rem 2rem;
-            border-radius: 25px;
-            font-weight: 600;
-            z-index: 3000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .notification.show {
-            opacity: 1;
+        @media (max-width: 600px) {
+            header { justify-content: center; text-align: center; }
+            .global-controls { justify-content: center; width: 100%; }
+            .btn { flex: 1; min-width: 140px; justify-content: center; font-size: 0.8rem; padding: 12px 10px; }
+            .title-group h1 { font-size: 1.8rem; }
+            .focus-title { font-size: 1rem; }
+            .focus-input { font-size: 1.1rem; }
+            .task-modal { width: 100%; height: 100vh; max-height: 100vh; border-radius: 0; transform: translateY(100%); }
+            .modal-body { padding: 15px; }
         }
     </style>
 </head>
 <body>
-    <!-- 🎯 Focus Controls -->
-    <div class="focus-controls">
-        <button class="focus-btn" id="focusMode">🎯 Focus Mode</button>
-        <button class="focus-btn" id="overwhelmMode">🛡️ Calm Mode</button>
-        <button class="focus-btn" id="energyTracker">⚡ Energy Pattern</button>
+    <canvas id="bg-canvas"></canvas>
+    <div class="vignette"></div>
+
+    <div id="app-wrapper">
+        <!-- Header & Top Controls -->
+        <header>
+            <div class="title-group">
+                <h1 class="glitch-text" data-text="EXEC_FUNCTION.sys">EXEC_FUNCTION.sys</h1>
+                <p>Manage your chaos. Tap a cell to organize.</p>
+            </div>
+            <div class="global-controls">
+                <button class="btn btn-install" id="btn-install" onclick="installPWA()">📥 Install App</button>
+                <button class="btn btn-dopamine" onclick="triggerDopamineHit(event)">✨ Dopamine Hit</button>
+                <button class="btn btn-calm" onclick="toggleCalmMode()">🛡️ Shield</button>
+            </div>
+        </header>
+
+        <!-- Main Quest (Today's Focus) -->
+        <section class="focus-section">
+            <div class="focus-title">
+                <span>[ PRIMARY OBJECTIVE ]</span>
+                <span id="date-display" style="color: var(--text-muted); font-size: 0.9rem;"></span>
+            </div>
+            <div class="focus-input-group">
+                <div class="checkbox" id="focus-check" onclick="toggleFocusComplete(event)"></div>
+                <input type="text" class="focus-input" id="focus-input" placeholder="If I only do ONE thing today, it will be...">
+            </div>
+        </section>
+
+        <!-- Energy Matrix (App Interface) -->
+        <section class="grid-container">
+            <!-- Desktop Header -->
+            <div class="grid-header" id="grid-header">
+                <div class="grid-cell-header">ENERGY</div>
+                <div class="grid-cell-header" data-col="Mon">MON</div>
+                <div class="grid-cell-header" data-col="Tue">TUE</div>
+                <div class="grid-cell-header" data-col="Wed">WED</div>
+                <div class="grid-cell-header" data-col="Thu">THU</div>
+                <div class="grid-cell-header" data-col="Fri">FRI</div>
+                <div class="grid-cell-header" data-col="Sat">SAT</div>
+                <div class="grid-cell-header" data-col="Sun">SUN</div>
+            </div>
+
+            <div class="grid-body" id="grid-body">
+                <!-- Rows injected via JS -->
+            </div>
+        </section>
     </div>
 
-    <!-- 🔔 Notification System -->
-    <div class="notification" id="notification"></div>
-
-    <!-- 🛡️ Overwhelm Prevention Shield -->
-    <div class="overwhelm-shield" id="overwhelmShield">
-        <div class="overwhelm-message">
-            <h3>🌸 Breathe, Beautiful Human 🌸</h3>
-            <p>You're feeling overwhelmed. That's okay. Let's slow down.</p>
-            <p>Take 3 deep breaths. You don't have to do everything today.</p>
-            <button class="btn btn-primary" onclick="exitOverwhelmMode()">I'm Ready to Continue</button>
+    <!-- Task Editor Modal -->
+    <div class="modal-overlay" id="task-modal-overlay">
+        <div class="task-modal">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">Mon - High Energy</div>
+                <button class="modal-close" onclick="closeTaskModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="task-list">
+                    <!-- Tasks injected here -->
+                </div>
+                <div class="task-input-container">
+                    <input type="text" class="new-task-input" id="new-task-input" placeholder="Add a new task...">
+                    <button class="btn-add-task" onclick="addNewTask()">ADD</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="container">
-        <!-- 🧠 Header -->
-        <header class="header">
-            <h1 class="title">💫 ADHD-FRIENDLY ENERGY PLANNER</h1>
-            <p class="subtitle">Your Chaos, Your Rules, Your Pace</p>
-        </header>
-
-        <!-- ⚡ Energy Pattern Insights -->
-        <section class="energy-insights" id="energyInsights" style="display: none;">
-            <h3>🧠 Your Energy Patterns This Week</h3>
-            <div class="energy-pattern" id="energyPattern"></div>
-            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
-                Track patterns to understand your natural rhythms. No judgment, just data. 💜
-            </p>
-        </section>
-
-        <!-- 🎯 Today's Focus -->
-        <section class="todays-focus">
-            <h3 class="focus-title">🎯 Today's Gentle Focus</h3>
-            <div id="todaysFocus">
-                <div class="smart-task-input">
-                    <textarea class="task-input" id="newFocusTask" 
-                        placeholder="What's ONE thing that would make today feel good? (Be specific but kind to yourself)"
-                        rows="2"></textarea>
-                    <div class="task-suggestions" id="taskSuggestions"></div>
-                </div>
-                <div class="time-estimator">
-                    <span style="font-size: 0.8rem; opacity: 0.8;">How long might this take?</span>
-                    <div class="time-chip" data-time="15">15min</div>
-                    <div class="time-chip" data-time="30">30min</div>
-                    <div class="time-chip" data-time="60">1hr</div>
-                    <div class="time-chip" data-time="120">2hr</div>
-                    <div class="time-chip" data-time="240">Half day</div>
-                </div>
-            </div>
-            <div id="focusList"></div>
-        </section>
-
-        <!-- 🏆 Progress Tracking -->
-        <section class="progress-section">
-            <h3>🏆 This Week's Gentle Progress</h3>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="motivation-message" id="motivationMessage">
-                Every small step counts. You're doing better than you think. 💜
-            </div>
-        </section>
-
-        <!-- 📅 Main Planning Grid -->
-        <main class="planner-container">
-            <div class="planner-grid" id="plannerGrid">
-                <!-- Grid headers -->
-                <div class="grid-header"></div>
-                <div class="grid-header">High Energy<br><small>⚡ When you're buzzing</small></div>
-                <div class="grid-header">Medium Energy<br><small>🌊 Steady flow state</small></div>
-                <div class="grid-header">Low Energy<br><small>🌸 Gentle tasks only</small></div>
-                <div class="grid-header">Recharge<br><small>🔋 Rest & restore</small></div>
-                
-                <!-- Days will be generated by JavaScript -->
-            </div>
-        </main>
-
-        <!-- 🎮 Enhanced Controls -->
-        <footer class="controls">
-            <button class="btn btn-primary" onclick="smartSave()">💾 Smart Save</button>
-            <button class="btn btn-secondary" onclick="gentleReset()">🌸 Gentle Reset</button>
-            <button class="btn btn-warning" onclick="printPlanner()">📄 Print/Save</button>
-            <button class="btn btn-primary" onclick="showEnergyInsights()">📊 Energy Insights</button>
-        </footer>
+    <!-- Calm Mode Overlay -->
+    <div id="calm-overlay">
+        <div class="breathe-circle" id="breathe-circle">
+            <div class="breathe-text" id="breathe-text">BREATHE</div>
+        </div>
+        <button class="calm-exit" onclick="toggleCalmMode()">Return to Reality</button>
     </div>
 
     <script>
-        // 🧠 ADHD-Friendly Energy Planner with Real Solutions
-        
-        class ADHDFriendlyPlanner {
-            constructor() {
-                this.currentWeek = new Date();
-                this.focusMode = false;
-                this.overwhelmMode = false;
-                this.energyData = this.loadEnergyData();
-                this.taskSuggestions = [
-                    "Send one important email",
-                    "Make that phone call you've been avoiding",
-                    "Tidy one small area",
-                    "Take a 10-minute walk",
-                    "Drink water and take vitamins",
-                    "Reply to one text message",
-                    "Do laundry (just one load)",
-                    "Plan tomorrow's outfit",
-                    "Write in journal for 5 minutes",
-                    "Stretch for 10 minutes",
-                    "Read for 15 minutes",
-                    "Meditate for 5 minutes",
-                    "Call a friend",
-                    "Do one household task",
-                    "Work on passion project for 30 minutes",
-                    "Prep healthy snacks",
-                    "Review and pay one bill",
-                    "Update calendar",
-                    "Listen to favorite podcast",
-                    "Practice gratitude"
-                ];
-                this.motivationalMessages = [
-                    "You're doing better than you think! 💜",
-                    "Small steps are still steps forward 🌸",
-                    "Your worth isn't measured by productivity 💫",
-                    "Rest is productive too, beautiful human 🌙",
-                    "Progress over perfection, always ✨",
-                    "You're allowed to have gentle days 🌿",
-                    "Celebrate the tiny wins! 🎉",
-                    "Your brain works differently, and that's beautiful 🧠💕"
-                ];
-                this.init();
-            }
-            
-            init() {
-                this.generateWeekGrid();
-                this.loadFromStorage();
-                this.setupEventListeners();
-                this.updateProgress();
-                this.startGentleReminders();
-            }
-            
-            // 🗓️ Generate Smart Week Grid
-            generateWeekGrid() {
-                const grid = document.getElementById('plannerGrid');
-                const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                const energyTypes = ['high', 'medium', 'low', 'recharge'];
-                const energyLabels = ['High Energy', 'Medium Energy', 'Low Energy', 'Recharge'];
-                
-                // Clear existing content except headers
-                const headers = grid.querySelectorAll('.grid-header');
-                grid.innerHTML = '';
-                headers.forEach(header => grid.appendChild(header));
-                
-                days.forEach((day, dayIndex) => {
-                    // Day label with energy indicator
-                    const dayLabel = document.createElement('div');
-                    dayLabel.className = 'day-label';
-                    dayLabel.innerHTML = `
-                        ${day}
-                        <div class="day-energy-indicator" data-day="${day.toLowerCase()}"></div>
-                    `;
-                    grid.appendChild(dayLabel);
-                    
-                    // Energy cells
-                    energyTypes.forEach((energy, energyIndex) => {
-                        const cell = document.createElement('div');
-                        cell.className = `energy-cell ${energy}`;
-                        cell.dataset.label = energyLabels[energyIndex];
-                        cell.innerHTML = `
-                            <div class="smart-task-input">
-                                <textarea 
-                                    class="energy-input" 
-                                    data-day="${day.toLowerCase()}" 
-                                    data-energy="${energy}"
-                                    placeholder="${this.getSmartPlaceholder(energy)}"
-                                    rows="3"
-                                ></textarea>
-                                <div class="task-suggestions"></div>
-                            </div>
-                        `;
-                        grid.appendChild(cell);
-                    });
-                });
-                
-                this.setupTaskInputs();
-            }
-            
-            // 🧠 Smart Placeholder Text
-            getSmartPlaceholder(energy) {
-                const placeholders = {
-                    high: "When you're feeling energized... (Break big tasks into steps)",
-                    medium: "Steady, manageable tasks... (Your comfort zone)",
-                    low: "Gentle, low-pressure activities... (Be kind to yourself)",
-                    recharge: "Rest, self-care, fun... (This is productive too)"
-                };
-                return placeholders[energy];
-            }
-            
-            // 🎯 Setup Smart Task Inputs
-            setupTaskInputs() {
-                const inputs = document.querySelectorAll('.energy-input');
-                inputs.forEach(input => {
-                    input.addEventListener('input', (e) => {
-                        this.autoResize(e.target);
-                        this.saveToStorage();
-                        this.updateProgress();
-                        this.detectOverwhelm(e.target);
-                    });
-                    
-                    input.addEventListener('focus', (e) => this.showTaskSuggestions(e.target));
-                    input.addEventListener('blur', (e) => {
-                        setTimeout(() => this.hideTaskSuggestions(e.target), 200);
-                    });
-                    
-                    this.autoResize(input);
-                });
-            }
-            
-            // 📝 Smart Task Suggestions
-            showTaskSuggestions(input) {
-                const container = input.parentElement;
-                const suggestions = container.querySelector('.task-suggestions');
-                const value = input.value.toLowerCase();
-                
-                const relevantSuggestions = this.taskSuggestions
-                    .filter(suggestion => 
-                        suggestion.toLowerCase().includes(value) || 
-                        value === '' ||
-                        this.getRelevantSuggestions(input.dataset.energy).includes(suggestion)
-                    )
-                    .slice(0, 5);
-                
-                if (relevantSuggestions.length > 0) {
-                    suggestions.innerHTML = relevantSuggestions
-                        .map(suggestion => `<div class="suggestion-item">${suggestion}</div>`)
-                        .join('');
-                    
-                    suggestions.style.display = 'block';
-                    
-                    // Add click handlers
-                    suggestions.querySelectorAll('.suggestion-item').forEach(item => {
-                        item.addEventListener('click', () => {
-                            input.value = item.textContent;
-                            this.hideTaskSuggestions(input);
-                            this.saveToStorage();
-                            this.updateProgress();
-                        });
-                    });
-                }
-            }
-            
-            hideTaskSuggestions(input) {
-                const container = input.parentElement;
-                const suggestions = container.querySelector('.task-suggestions');
-                suggestions.style.display = 'none';
-            }
-            
-            // 🧠 Energy-Specific Suggestions
-            getRelevantSuggestions(energy) {
-                const energySuggestions = {
-                    high: ["Make that phone call you've been avoiding", "Work on passion project for 30 minutes", "Do laundry (just one load)", "Send one important email"],
-                    medium: ["Tidy one small area", "Update calendar", "Reply to one text message", "Review and pay one bill"],
-                    low: ["Take a 10-minute walk", "Drink water and take vitamins", "Stretch for 10 minutes", "Listen to favorite podcast"],
-                    recharge: ["Read for 15 minutes", "Meditate for 5 minutes", "Write in journal for 5 minutes", "Practice gratitude"]
-                };
-                return energySuggestions[energy] || [];
-            }
-            
-            // 🚨 Overwhelm Detection
-            detectOverwhelm(input) {
-                const dayInputs = document.querySelectorAll(`[data-day="${input.dataset.day}"]`);
-                const totalTasks = Array.from(dayInputs).reduce((count, inp) => {
-                    return count + (inp.value.split('\n').filter(line => line.trim()).length);
-                }, 0);
-                
-                if (totalTasks > 8) {
-                    this.showNotification("Whoa there, beautiful! That's a lot for one day. Maybe move some tasks to other days? 💜", 'warning');
-                }
-            }
-            
-            // 🔔 Gentle Notifications
-            showNotification(message, type = 'info') {
-                const notification = document.getElementById('notification');
-                notification.textContent = message;
-                notification.className = `notification show ${type}`;
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 4000);
-            }
-            
-            // 📊 Energy Pattern Tracking
-            trackEnergyPattern(day, energy, hasContent) {
-                if (!this.energyData[day]) this.energyData[day] = {};
-                this.energyData[day][energy] = hasContent;
-                this.saveEnergyData();
-                this.updateEnergyIndicators();
-            }
-            
-            updateEnergyIndicators() {
-                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                days.forEach(day => {
-                    const indicator = document.querySelector(`[data-day="${day}"]`);
-                    if (indicator) {
-                        const dayData = this.energyData[day] || {};
-                        const completionRate = Object.values(dayData).filter(Boolean).length / 4;
-                        indicator.style.width = `${completionRate * 100}%`;
-                        
-                        if (completionRate > 0.7) indicator.style.background = 'var(--toxic-green)';
-                        else if (completionRate > 0.4) indicator.style.background = 'var(--acid-yellow)';
-                        else indicator.style.background = 'var(--nightmare-pink)';
-                    }
-                });
-            }
-            
-            // 🎯 Focus Mode
-            toggleFocusMode() {
-                this.focusMode = !this.focusMode;
-                document.body.classList.toggle('focus-mode', this.focusMode);
-                document.getElementById('focusMode').classList.toggle('active', this.focusMode);
-                
-                if (this.focusMode) {
-                    this.showNotification("Focus mode activated! Only current section visible. 🎯");
-                } else {
-                    this.showNotification("Focus mode deactivated. Welcome back to full view! 👀");
-                }
-            }
-            
-            // 🛡️ Overwhelm Protection
-            toggleOverwhelmMode() {
-                this.overwhelmMode = !this.overwhelmMode;
-                document.getElementById('overwhelmShield').classList.toggle('active', this.overwhelmMode);
-                document.getElementById('overwhelmMode').classList.toggle('active', this.overwhelmMode);
-            }
-            
-            // ⚡ Show Energy Insights
-            showEnergyInsights() {
-                const insights = document.getElementById('energyInsights');
-                const pattern = document.getElementById('energyPattern');
-                
-                insights.style.display = insights.style.display === 'none' ? 'block' : 'none';
-                
-                if (insights.style.display === 'block') {
-                    this.generateEnergyPattern(pattern);
-                }
-            }
-            
-            generateEnergyPattern(container) {
-                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                container.innerHTML = '';
-                
-                days.forEach(day => {
-                    const dayEl = document.createElement('div');
-                    dayEl.className = 'energy-day';
-                    dayEl.innerHTML = `<div>${day}</div>`;
-                    
-                    // Add energy level indicator based on completion
-                    const dayData = this.energyData[day.toLowerCase()] || {};
-                    const completion = Object.values(dayData).filter(Boolean).length;
-                    dayEl.style.background = this.getEnergyColor(completion);
-                    
-                    container.appendChild(dayEl);
-                });
-            }
-            
-            getEnergyColor(completion) {
-                if (completion >= 3) return 'var(--toxic-green)';
-                if (completion >= 2) return 'var(--acid-yellow)';
-                if (completion >= 1) return 'var(--nightmare-pink)';
-                return 'var(--void-black)';
-            }
-            
-            // 🏆 Progress Tracking
-            updateProgress() {
-                const inputs = document.querySelectorAll('.energy-input');
-                const filledInputs = Array.from(inputs).filter(input => input.value.trim().length > 0);
-                const progress = (filledInputs.length / inputs.length) * 100;
-                
-                document.getElementById('progressFill').style.width = `${progress}%`;
-                
-                const messageEl = document.getElementById('motivationMessage');
-                const randomMessage = this.motivationalMessages[Math.floor(Math.random() * this.motivationalMessages.length)];
-                
-                if (progress > 80) {
-                    messageEl.textContent = "Look at you being amazing! 🌟 " + randomMessage;
-                } else if (progress > 50) {
-                    messageEl.textContent = "Great progress! " + randomMessage;
-                } else if (progress > 20) {
-                    messageEl.textContent = "Every step counts! " + randomMessage;
-                } else {
-                    messageEl.textContent = randomMessage;
-                }
-            }
-            
-            // 💾 Enhanced Storage
-            saveToStorage() {
-                const data = {};
-                const inputs = document.querySelectorAll('.energy-input');
-                
-                inputs.forEach(input => {
-                    const key = `${input.dataset.day}-${input.dataset.energy}`;
-                    data[key] = input.value;
-                    
-                    // Track energy patterns
-                    this.trackEnergyPattern(input.dataset.day, input.dataset.energy, input.value.trim().length > 0);
-                });
-                
-                try {
-                    localStorage.setItem('adhdFriendlyPlanner', JSON.stringify(data));
-                    localStorage.setItem('plannerLastSaved', new Date().toISOString());
-                } catch (e) {
-                    this.showNotification("Couldn't save automatically. Try the manual save button! 💾", 'warning');
-                }
-            }
-            
-            loadFromStorage() {
-                try {
-                    const data = JSON.parse(localStorage.getItem('adhdFriendlyPlanner')) || {};
-                    
-                    Object.entries(data).forEach(([key, value]) => {
-                        const input = document.querySelector(`[data-day="${key.split('-')[0]}"][data-energy="${key.split('-')[1]}"]`);
-                        if (input) {
-                            input.value = value;
-                            this.autoResize(input);
-                        }
-                    });
-                    
-                    this.updateProgress();
-                    this.updateEnergyIndicators();
-                } catch (e) {
-                    console.log('Loading had a hiccup, but we\'re okay! 💜');
-                }
-            }
-            
-            // 🔄 Auto-resize
-            autoResize(textarea) {
-                textarea.style.height = 'auto';
-                const newHeight = Math.max(textarea.scrollHeight, 60);
-                textarea.style.height = newHeight + 'px';
-            }
-            
-            // ⏰ Gentle Reminders
-            startGentleReminders() {
-                // Gentle reminder every 30 minutes to save
-                setInterval(() => {
-                    const lastSaved = localStorage.getItem('plannerLastSaved');
-                    if (lastSaved) {
-                        const timeSince = Date.now() - new Date(lastSaved).getTime();
-                        if (timeSince > 30 * 60 * 1000) { // 30 minutes
-                            this.showNotification("Gentle reminder: Your work is auto-saved! 💜");
-                        }
-                    }
-                }, 30 * 60 * 1000);
-                
-                // Random motivation every hour
-                setInterval(() => {
-                    const randomMessage = this.motivationalMessages[Math.floor(Math.random() * this.motivationalMessages.length)];
-                    this.showNotification(randomMessage);
-                }, 60 * 60 * 1000);
-            }
-            
-            // 🧠 Energy Data Management
-            loadEnergyData() {
-                try {
-                    return JSON.parse(localStorage.getItem('energyPatternData')) || {};
-                } catch (e) {
-                    return {};
-                }
-            }
-            
-            saveEnergyData() {
-                try {
-                    localStorage.setItem('energyPatternData', JSON.stringify(this.energyData));
-                } catch (e) {
-                    console.log('Energy data save hiccup - no worries! 💜');
-                }
-            }
-            
-            // 🌸 Gentle Reset
-            gentleReset() {
-                const message = `Are you sure you want to gently reset your planner? 
-                
-This will clear your current week, but your energy patterns will be saved for insights.
+        // --- App Data Architecture ---
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const energyLevels = [
+            { id: 'high', label: 'HIGH ENERGY', sub: 'Deep focus, complex tasks', class: 'high', color: 'var(--energy-high)' },
+            { id: 'med', label: 'MED ENERGY', sub: 'Admin, meetings, chores', class: 'med', color: 'var(--energy-med)' },
+            { id: 'low', label: 'LOW ENERGY', sub: 'Autopilot tasks, emails', class: 'low', color: 'var(--energy-low)' },
+            { id: 'rest', label: 'RECHARGE', sub: 'Hobbies, resting, nothing', class: 'rest', color: 'var(--energy-rest)' }
+        ];
 
-Remember: Starting fresh is always okay. You're not failing. 💜`;
-                
-                if (confirm(message)) {
-                    document.querySelectorAll('.energy-input').forEach(input => {
-                        input.value = '';
-                        this.autoResize(input);
-                    });
-                    
-                    this.saveToStorage();
-                    this.updateProgress();
-                    this.showNotification("Fresh start activated! You've got this. 🌸");
-                }
-            }
-            
-            // 💾 Smart Save
-            smartSave() {
-                this.saveToStorage();
-                this.showNotification("All saved! Your beautiful chaos is preserved. 💾✨");
-            }
-            
-            // 🖨️ Print
-            print() {
-                window.print();
-            }
-            
-            // 🎮 Event Listeners
-            setupEventListeners() {
-                document.getElementById('focusMode').addEventListener('click', () => this.toggleFocusMode());
-                document.getElementById('overwhelmMode').addEventListener('click', () => this.toggleOverwhelmMode());
-                document.getElementById('energyTracker').addEventListener('click', () => this.showEnergyInsights());
-                
-                // Today's focus functionality
-                const newTaskInput = document.getElementById('newFocusTask');
-                const timeChips = document.querySelectorAll('.time-chip');
-                
-                newTaskInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.addFocusTask();
-                    }
+        let appData = {
+            focusTask: { text: "", done: false },
+            tasks: {} // Format: "Mon-high": [{ id: 1, text: "Do taxes", done: false }]
+        };
+
+        // State for currently open modal
+        let currentModalCell = { day: null, energy: null };
+
+        // --- Audio Engine ---
+        let audioCtx;
+        function getAudioContext() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            const ctx = getAudioContext();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const now = ctx.currentTime;
+
+            if (type === 'dopamine') {
+                // Happy chord explosion
+                [440, 554.37, 659.25, 880].forEach((freq, i) => {
+                    let o = ctx.createOscillator(), g = ctx.createGain();
+                    o.connect(g); g.connect(ctx.destination);
+                    o.type = 'sine'; o.frequency.value = freq;
+                    g.gain.setValueAtTime(0, now + (i*0.05));
+                    g.gain.linearRampToValueAtTime(0.1, now + (i*0.05) + 0.1);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + (i*0.05) + 1);
+                    o.start(now + (i*0.05)); o.stop(now + (i*0.05) + 1);
                 });
-                
-                timeChips.forEach(chip => {
-                    chip.addEventListener('click', () => {
-                        timeChips.forEach(c => c.classList.remove('selected'));
-                        chip.classList.add('selected');
-                    });
-                });
+            } else if (type === 'check') {
+                // Snappy success ping
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.15);
+                osc.start(now); osc.stop(now + 0.15);
+            } else if (type === 'delete') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now); osc.stop(now + 0.1);
             }
-            
-            // 🎯 Today's Focus Management
-            addFocusTask() {
-                const input = document.getElementById('newFocusTask');
-                const task = input.value.trim();
-                const selectedTime = document.querySelector('.time-chip.selected');
-                
-                if (task) {
-                    const focusList = document.getElementById('focusList');
-                    const taskEl = document.createElement('div');
-                    taskEl.className = 'focus-item';
-                    taskEl.innerHTML = `
-                        <div class="focus-checkbox" onclick="this.classList.toggle('completed')"></div>
-                        <div style="flex: 1;">
-                            ${task}
-                            ${selectedTime ? `<small style="opacity: 0.7; display: block;">Estimated: ${selectedTime.textContent}</small>` : ''}
-                        </div>
-                    `;
-                    
-                    focusList.appendChild(taskEl);
-                    input.value = '';
-                    document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('selected'));
-                    
-                    this.showNotification("Focus task added! Remember: done is better than perfect. 🎯");
+        }
+
+        let droneOsc, droneGain;
+        function toggleDrone(turnOn) {
+            const ctx = getAudioContext();
+            if (turnOn) {
+                if(droneOsc) return;
+                droneOsc = ctx.createOscillator();
+                droneGain = ctx.createGain();
+                droneOsc.type = 'sine';
+                droneOsc.frequency.value = 100;
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass'; filter.frequency.value = 400;
+                droneOsc.connect(filter); filter.connect(droneGain); droneGain.connect(ctx.destination);
+                droneGain.gain.setValueAtTime(0, ctx.currentTime);
+                droneGain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 2);
+                droneOsc.start();
+            } else {
+                if(droneGain) {
+                    droneGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+                    setTimeout(() => { if(droneOsc){ droneOsc.stop(); droneOsc=null; droneGain=null;} }, 1100);
                 }
             }
         }
+
+        // --- Visual Engine (Canvas & Effects) ---
+        const canvas = document.getElementById('bg-canvas');
+        const canvasCtx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+
+        window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+        window.addEventListener('touchmove', e => { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; });
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5; this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                const colors = ['#ff0055', '#00f0ff', '#b000ff'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                let dx = mouseX - this.x, dy = mouseY - this.y, dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 200) { this.x -= (dx/dist) * 1; this.y -= (dy/dist) * 1; }
+
+                canvasCtx.beginPath(); canvasCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                canvasCtx.fillStyle = this.color; canvasCtx.globalAlpha = 0.3; canvasCtx.fill();
+            }
+        }
+        for(let i=0; i<60; i++) particles.push(new Particle());
         
-        // 🚀 Initialize when ready
+        function animateCanvas() {
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => p.update());
+            canvasCtx.globalAlpha = 0.1;
+            for(let i=0; i<particles.length; i++){
+                for(let j=i+1; j<particles.length; j++){
+                    let dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx + dy*dy);
+                    if(dist < 150) {
+                        canvasCtx.beginPath(); canvasCtx.strokeStyle = particles[i].color;
+                        canvasCtx.lineWidth = 1; canvasCtx.moveTo(particles[i].x, particles[i].y);
+                        canvasCtx.lineTo(particles[j].x, particles[j].y); canvasCtx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        function createSparks(x, y, color) {
+            for(let i=0; i<20; i++) {
+                let spark = document.createElement('div'); spark.className = 'spark';
+                let ang = Math.random() * Math.PI * 2, dist = Math.random() * 100 + 30;
+                spark.style.left = `${x}px`; spark.style.top = `${y}px`;
+                spark.style.width = `${Math.random() * 6 + 2}px`; spark.style.height = spark.style.width;
+                spark.style.backgroundColor = color; spark.style.boxShadow = `0 0 15px ${color}`;
+                spark.style.setProperty('--tx', `${Math.cos(ang) * dist}px`); spark.style.setProperty('--ty', `${Math.sin(ang) * dist}px`);
+                document.body.appendChild(spark); setTimeout(() => spark.remove(), 800);
+            }
+        }
+
+        function triggerScreenShake() {
+            const wrapper = document.getElementById('app-wrapper');
+            wrapper.classList.remove('shake'); void wrapper.offsetWidth; 
+            wrapper.classList.add('shake'); setTimeout(() => wrapper.classList.remove('shake'), 400);
+        }
+
+        // --- App Initialization & Data Rendering ---
         document.addEventListener('DOMContentLoaded', () => {
-            window.planner = new ADHDFriendlyPlanner();
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', options);
+
+            const todayStr = new Date().toLocaleDateString('en-US', { weekday: 'short' });
+            document.querySelectorAll('.grid-cell-header').forEach(el => {
+                if(el.dataset.col === todayStr) el.classList.add('today');
+            });
+
+            loadData();
+            buildGrid();
             
-            // Global functions for buttons
-            window.smartSave = () => window.planner.smartSave();
-            window.gentleReset = () => window.planner.gentleReset();
-            window.printPlanner = () => window.planner.print();
-            window.showEnergyInsights = () => window.planner.showEnergyInsights();
-            window.exitOverwhelmMode = () => window.planner.toggleOverwhelmMode();
+            // Focus Input Handlers
+            const fInput = document.getElementById('focus-input');
+            fInput.value = appData.focusTask.text;
+            if(appData.focusTask.done) {
+                fInput.classList.add('done');
+                document.getElementById('focus-check').classList.add('done');
+            }
+            
+            fInput.addEventListener('input', (e) => {
+                appData.focusTask.text = e.target.value;
+                saveData();
+            });
+
+            // Enter key on modal input
+            document.getElementById('new-task-input').addEventListener('keypress', (e) => {
+                if(e.key === 'Enter') addNewTask();
+            });
         });
+
+        function buildGrid() {
+            const tbody = document.getElementById('grid-body');
+            let html = '';
+            
+            energyLevels.forEach(level => {
+                html += `<div class="grid-row row-${level.id}">
+                    <div class="row-label ${level.class}">
+                        <div>${level.label}</div>
+                        <div style="font-size:0.65rem; color:var(--text-muted); margin-top:4px; font-weight:normal">${level.sub}</div>
+                    </div>`;
+                
+                days.forEach(day => {
+                    const key = `${day}-${level.id}`;
+                    const tasks = appData.tasks[key] || [];
+                    const activeTasks = tasks.filter(t => !t.done).length;
+                    
+                    let summaryClass = activeTasks > 0 ? 'cell-summary has-tasks' : 'cell-summary';
+                    let summaryText = activeTasks > 0 ? `${activeTasks} task${activeTasks > 1 ? 's' : ''}` : `+ Add`;
+                    
+                    // Show a preview of the first active task on desktop
+                    let previewText = '';
+                    if (tasks.length > 0) {
+                        const firstTask = tasks.find(t => !t.done) || tasks[0];
+                        previewText = firstTask.text;
+                    }
+
+                    html += `
+                    <div class="task-cell" data-day="${day}" onclick="openTaskModal('${day}', '${level.id}', event)">
+                        <div class="${summaryClass}" id="summary-${key}">
+                            ${activeTasks > 0 ? `<span style="color:${level.color}">●</span>` : ''}
+                            ${summaryText}
+                        </div>
+                        <div class="cell-task-preview" id="preview-${key}">${previewText}</div>
+                    </div>`;
+                });
+                
+                html += `</div>`;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        function updateGridCell(day, energy) {
+            const key = `${day}-${energy}`;
+            const tasks = appData.tasks[key] || [];
+            const activeTasks = tasks.filter(t => !t.done).length;
+            
+            const level = energyLevels.find(e => e.id === energy);
+            const summaryEl = document.getElementById(`summary-${key}`);
+            const previewEl = document.getElementById(`preview-${key}`);
+            
+            if(summaryEl) {
+                summaryEl.className = activeTasks > 0 ? 'cell-summary has-tasks' : 'cell-summary';
+                summaryEl.innerHTML = activeTasks > 0 ? `<span style="color:${level.color}">●</span> ${activeTasks} task${activeTasks > 1 ? 's' : ''}` : `+ Add`;
+            }
+            if(previewEl) {
+                let previewText = '';
+                if (tasks.length > 0) {
+                    const firstTask = tasks.find(t => !t.done) || tasks[0];
+                    previewText = firstTask.text;
+                }
+                previewEl.innerText = previewText;
+            }
+        }
+
+        // --- Modal & Task Logic ---
+        function openTaskModal(day, energy, e) {
+            getAudioContext();
+            currentModalCell = { day, energy };
+            const level = energyLevels.find(l => l.id === energy);
+            
+            document.getElementById('modal-title').innerHTML = `${day} <span style="color:${level.color}; margin-left:10px">| ${level.label}</span>`;
+            document.getElementById('task-modal-overlay').classList.add('active');
+            
+            renderModalTasks();
+            setTimeout(() => document.getElementById('new-task-input').focus(), 100);
+        }
+
+        function closeTaskModal() {
+            document.getElementById('task-modal-overlay').classList.remove('active');
+        }
+
+        function renderModalTasks() {
+            const key = `${currentModalCell.day}-${currentModalCell.energy}`;
+            const tasks = appData.tasks[key] || [];
+            const listEl = document.getElementById('task-list');
+            
+            if(tasks.length === 0) {
+                listEl.innerHTML = `<div style="color:var(--text-muted); font-style:italic; padding: 20px 0; text-align:center;">No tasks yet. Add one below!</div>`;
+                return;
+            }
+
+            let html = '';
+            tasks.forEach(t => {
+                const doneClass = t.done ? 'done' : '';
+                const checkClass = t.done ? 'checkbox done' : 'checkbox';
+                html += `
+                <div class="task-item ${doneClass}">
+                    <div class="${checkClass}" onclick="toggleTask(${t.id}, event)"></div>
+                    <div class="task-item-text">${t.text}</div>
+                    <button class="task-delete" onclick="deleteTask(${t.id})">×</button>
+                </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        }
+
+        window.addNewTask = function() {
+            const input = document.getElementById('new-task-input');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const key = `${currentModalCell.day}-${currentModalCell.energy}`;
+            if(!appData.tasks[key]) appData.tasks[key] = [];
+            
+            appData.tasks[key].push({
+                id: Date.now(),
+                text: text,
+                done: false
+            });
+
+            input.value = '';
+            saveData();
+            renderModalTasks();
+            updateGridCell(currentModalCell.day, currentModalCell.energy);
+        }
+
+        window.toggleTask = function(taskId, e) {
+            playSound('check');
+            const key = `${currentModalCell.day}-${currentModalCell.energy}`;
+            const task = appData.tasks[key].find(t => t.id === taskId);
+            if(task) {
+                task.done = !task.done;
+                if(task.done) {
+                    const rect = e.target.getBoundingClientRect();
+                    createSparks(rect.left + rect.width/2, rect.top + rect.height/2, '#00ff66');
+                }
+                saveData();
+                renderModalTasks();
+                updateGridCell(currentModalCell.day, currentModalCell.energy);
+            }
+        }
+
+        window.deleteTask = function(taskId) {
+            playSound('delete');
+            const key = `${currentModalCell.day}-${currentModalCell.energy}`;
+            appData.tasks[key] = appData.tasks[key].filter(t => t.id !== taskId);
+            saveData();
+            renderModalTasks();
+            updateGridCell(currentModalCell.day, currentModalCell.energy);
+        }
+
+        // --- Interactions ---
+        window.triggerDopamineHit = function(e) {
+            getAudioContext();
+            playSound('dopamine');
+            triggerScreenShake();
+            
+            let x = window.innerWidth / 2, y = window.innerHeight / 2;
+            if(e && e.target) {
+                const rect = e.target.getBoundingClientRect();
+                x = rect.left + rect.width/2; y = rect.top + rect.height/2;
+            }
+            createSparks(x, y, '#ffaa00');
+            createSparks(x, y, '#ff0055');
+        }
+
+        window.toggleFocusComplete = function(e) {
+            getAudioContext();
+            const checkbox = document.getElementById('focus-check');
+            const input = document.getElementById('focus-input');
+            
+            appData.focusTask.done = !appData.focusTask.done;
+            checkbox.classList.toggle('done', appData.focusTask.done);
+            input.classList.toggle('done', appData.focusTask.done);
+            
+            if(appData.focusTask.done) {
+                playSound('complete');
+                triggerScreenShake();
+                const rect = checkbox.getBoundingClientRect();
+                createSparks(rect.left + rect.width/2, rect.top + rect.height/2, '#00ff66');
+            }
+            saveData();
+        }
+
+        // --- Calm Mode Breathing Engine ---
+        let calmInterval, calmPhase = 0; 
+        window.toggleCalmMode = function() {
+            getAudioContext();
+            const overlay = document.getElementById('calm-overlay');
+            const circle = document.getElementById('breathe-circle');
+            const text = document.getElementById('breathe-text');
+            
+            if(overlay.classList.contains('active')) {
+                overlay.classList.remove('active');
+                toggleDrone(false);
+                clearInterval(calmInterval);
+                circle.className = 'breathe-circle';
+            } else {
+                overlay.classList.add('active');
+                toggleDrone(true);
+                runBreathCycle(circle, text);
+            }
+        }
+
+        function runBreathCycle(circle, text) {
+            circle.className = 'breathe-circle inhale';
+            text.innerText = "INHALE (4s)";
+            
+            calmInterval = setTimeout(() => {
+                circle.className = 'breathe-circle hold';
+                text.innerText = "HOLD (7s)";
+                
+                calmInterval = setTimeout(() => {
+                    circle.className = 'breathe-circle exhale';
+                    text.innerText = "EXHALE (8s)";
+                    
+                    calmInterval = setTimeout(() => {
+                        if(document.getElementById('calm-overlay').classList.contains('active')) {
+                            runBreathCycle(circle, text);
+                        }
+                    }, 8000);
+                }, 7000);
+            }, 4000);
+        }
+
+        // --- Data Persistence ---
+        window.saveData = function() {
+            localStorage.setItem('adhdExecApp', JSON.stringify(appData));
+        }
+
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('adhdExecApp');
+                if(saved) {
+                    const parsed = JSON.parse(saved);
+                    appData = { ...appData, ...parsed }; // Merge arrays safely
+                }
+            } catch(e) {
+                console.error("Failed to load save data", e);
+            }
+        }
+
+        // --- PWA Installation Logic ---
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI notify the user they can install the PWA
+            document.getElementById('btn-install').style.display = 'flex';
+        });
+
+        window.installPWA = async function() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                document.getElementById('btn-install').style.display = 'none';
+            }
+        }
         
-        console.log('🧠 ADHD-Friendly Chaos Planner loaded!');
-        console.log('💜 Built with neurodivergent brains in mind');
-        console.log('🌟 You are enough, exactly as you are');
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('btn-install').style.display = 'none';
+            console.log('PWA was installed');
+        });
+
     </script>
 </body>
 </html>
